@@ -15,6 +15,20 @@ import java.util.UUID;
 @Table(name = "transactions")
 public class Transaction {
 
+    public Transaction(
+            BigDecimal amount,
+            String description,
+            LocalDateTime date,
+            TransactionType type,
+            Category category
+    ) {
+        this.amount = amount;
+        this.description = description;
+        this.date = date;
+        this.type = type;
+        this.category = category;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
