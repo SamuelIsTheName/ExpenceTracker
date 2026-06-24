@@ -78,6 +78,15 @@ public class TransactionService {
         return mapResponse(updatedTransaction);
     }
 
+    public String deleteTransaction(UUID transactionId){
+
+        if(transactionRepository.findById(transactionId).isPresent()){
+            transactionRepository.deleteById(transactionId);
+            return "Transaction has been removed";
+        }
+        return "Transaction does not exist";
+    }
+
     private TransactionResponse mapResponse(Transaction transaction){
         return new TransactionResponse(
                                 transaction.getId(),

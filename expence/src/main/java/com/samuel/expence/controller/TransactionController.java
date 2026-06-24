@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/transaction")
@@ -32,5 +33,10 @@ public class TransactionController {
             return transactionService.getTransactionByCategory(category);
         }
         return transactionService.getAllTransaction();
+    }
+
+    @DeleteMapping("/id")
+    public String deleteTransaction(@PathVariable UUID id){
+        return transactionService.deleteTransaction(id);
     }
 }
