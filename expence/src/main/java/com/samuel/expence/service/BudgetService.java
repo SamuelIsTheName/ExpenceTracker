@@ -73,6 +73,8 @@ public class BudgetService {
         BigDecimal amountSpent =transactionRepository.getTotalSpentForCategoryAndMonth(budget.getCategory().getId(), startDate, endDate);
         BigDecimal amountLeft = budget.getLimitAmount().subtract(amountSpent);
 
+        //TODO add monthly savings as-well by subtracting total monthly expenses from monthly income.
+
         return new BudgetSummaryResponse(budget.getLimitAmount(),amountSpent,amountLeft);
 
     }

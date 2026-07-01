@@ -1,5 +1,6 @@
 package com.samuel.expence.repository;
 
+import com.samuel.expence.dto.CategorySpendingResponse;
 import com.samuel.expence.entity.Transaction;
 import com.samuel.expence.entity.TransactionType;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,5 +28,47 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
             @Param("categoryId") UUID categoryId,
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate
+    );
+
+    @Query("""
+    SELECT COALESCE(SUM(t.amount),0)
+    FROM Transaction t
+    WHERE t.type = :type
+    AND t.date >= :startDate
+    AND t.date <= :endDate  
+    """)
+    BigDecimal getTotalByType(
+            @Param("type") TransactionType type,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
+
+    @Query("""
+    SELECT new com.samuel.expence.dto.CategorySpendingResponse(
+        t.category.name,
+        SUM(t.amount)
+    )
+    FROM Transaction t
+    WHERE t.type = 'EXPENSE'
+    GROUP BY t.category.name
+    ORDER BY SUM(t.amount) DESC
+    """)
+    List<CategorySpendingResponse> getAllTimeSpendingByCategory();
+
+    @Query("""
+    SELECT new com.samuel.expence.dto.CategorySpendingResponse(
+        t.category.name,
+        SUM(t.amount)
+    )
+    FROM Transaction t
+    WHERE t.type = 'EXPENSE'
+      AND t.date >= :startDate
+      AND t.date < :endDate
+    GROUP BY t.category.name
+    ORDER BY SUM(t.amount) DESC
+    """)
+    List<CategorySpendingResponse> getMonthlySpendingByCategory(
+            LocalDateTime startDate,
+            LocalDateTime endDate
     );
 }
